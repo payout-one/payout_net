@@ -31,6 +31,9 @@ namespace Payout.Lib.Responses
         [JsonPropertyName("redirect_url")]
         public string RedirectUrl { get; set; }
 
+        [JsonPropertyName("checkout_url")]
+        public string CheckoutUrl { get; set; }
+
         [JsonPropertyName("external_id")]
         public string ExternalId { get; set; }
 
