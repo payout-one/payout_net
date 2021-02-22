@@ -9,16 +9,4 @@ namespace Payout.Lib
         app
     }
 
-
-    public enum WithdrawalStatus
-    {
-        [EnumMember(Value = "pending")]
-        Pending,
-
-        [EnumMember(Value = "in_transit")]
-        InTransit,
-
-        [EnumMember(Value = "paid")]
-        Paid
-    }
 }
