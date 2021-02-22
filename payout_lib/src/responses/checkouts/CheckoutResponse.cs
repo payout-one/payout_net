@@ -5,16 +5,25 @@ using Payout.Lib.Models;
 
 namespace Payout.Lib.Responses
 {
-    public class CheckoutResponse : BaseSignedResponse
+    public class CheckoutResponse :  BaseSignedResponse
     {
         [JsonPropertyName("amount")]
-        public decimal Amount { get; set; }
+        public int Amount { get; set; }
 
         [JsonPropertyName("currency")]
         public string Currency { get; set; }
 
         [JsonPropertyName("customer")]
         public Customer Customer { get; set; }
+
+        [JsonPropertyName("billing_address")]
+        public Address BillingAddress { get; set; }
+
+        [JsonPropertyName("shipping_address")]
+        public Address ShippingAddress { get; set; }
+
+        [JsonPropertyName("idempotency_key")]
+        public string IdempotencyKey { get; set; }
 
         [JsonPropertyName("id")]
         public long Id { get; set; }
@@ -39,6 +48,7 @@ namespace Payout.Lib.Responses
 
         [JsonPropertyName("status")]
         public string Status { get; set; }
+
 
         public override string CalculateSignature(IPayoutSignature signature)
         {

@@ -7,6 +7,9 @@ using Payout.Lib.Responses;
 using Payout.Lib.Models;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Collections.Generic;
+using System.Linq;
+using System.ComponentModel.DataAnnotations;
 
 namespace Payout.Lib.Services
 {
@@ -26,6 +29,7 @@ namespace Payout.Lib.Services
             this._apiKey = apiKey;
         }
 
+        #region Auth
         public async Task<AuthResponse> GetToken()
         {
             var request = new AuthRequest { ApiKey = this._apiKey };
@@ -54,12 +58,55 @@ namespace Payout.Lib.Services
 
             return this._authentication;
         }
+        #endregion
 
-        public async Task<CheckoutResponse> CreateCheckout(CreateCheckoutRequest request)
+
+        #region Token
+        public async Task<GetTokenStatusResponse> GetTokenStatus(GetTokenStatusRequest request)
         {
             var token = await GetCachedToken();
 
+            var response = await this.SendAuthenticatedAsync(request.Request(this._apiKey.Host), token.Token);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var body = await response.Content.ReadAsStringAsync();
+
+                var tokenStatus = JsonSerializer.Deserialize<GetTokenStatusResponse>(body);
+                return tokenStatus;
+
+            }
+
+            throw new Exception(response.ToString());
+        }
+        public async Task<DeleteTokenResponse> DeleteToken(DeleteTokenRequest request)
+        {
+            var token = await GetCachedToken();
+
+            var response = await this.SendAuthenticatedAsync(request.Request(this._apiKey.Host), token.Token);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var body = await response.Content.ReadAsStringAsync();
+
+                var tokenStatus = JsonSerializer.Deserialize<DeleteTokenResponse>(body);
+                return tokenStatus;
+
+            }
+
+            throw new Exception(response.ToString());
+        }
+        #endregion
+
+        #region Checkout
+        public async Task<CheckoutResponse> CreateCheckout(CreateCheckoutRequest request)
+        {
+
+            var token = await GetCachedToken();
+
             request.SignRequest(this._signatureService);
+
+            ValidateModel(request);
 
             var response = await this.SendAuthenticatedAsync(request.Request(this._apiKey.Host), token.Token);
 
@@ -74,6 +121,7 @@ namespace Payout.Lib.Services
 
                 throw new Exception($"Signature error, response signature: {checkout.Signature}, calculated signature: {checkout.CalculateSignature(this._signatureService)}");
             }
+
 
             throw new Exception(response.ToString());
         }
@@ -99,6 +147,173 @@ namespace Payout.Lib.Services
             throw new Exception(response.ToString());
         }
 
+        public async Task<List<CheckoutResponse>> GetCheckouts(GetCheckoutsRequest request)
+        {
+            var token = await GetCachedToken();
+
+            var response = await this.SendAuthenticatedAsync(request.Request(this._apiKey.Host), token.Token);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var body = await response.Content.ReadAsStringAsync();
+
+                var checkouts = JsonSerializer.Deserialize<List<CheckoutResponse>>(body);
+
+                if (checkouts.All(a => a.Signature == a.CalculateSignature(this._signatureService)))
+                    return checkouts;
+
+                throw new Exception($"Signature error.");
+            }
+
+            throw new Exception(response.ToString());
+        }
+
+        #endregion
+
+
+        #region Withdrawals
+        public async Task<WithdrawalResponse> CreateWithdrawal(CreateWithdrawalRequest request)
+        {
+            var token = await GetCachedToken();
+
+            request.SignRequest(this._signatureService);
+
+            ValidateModel(request);
+
+            var response = await this.SendAuthenticatedAsync(request.Request(this._apiKey.Host), token.Token);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var body = await response.Content.ReadAsStringAsync();
+
+                var checkout = JsonSerializer.Deserialize<WithdrawalResponse>(body);
+
+                if (checkout.Signature == checkout.CalculateSignature(this._signatureService))
+                    return checkout;
+
+                throw new Exception($"Signature error, response signature: {checkout.Signature}, calculated signature: {checkout.CalculateSignature(this._signatureService)}");
+            }
+
+            throw new Exception(response.ToString());
+        }
+        public async Task<WithdrawalResponse> GetWithdrawal(GetWithdrawalRequest request)
+        {
+            var token = await GetCachedToken();
+
+            var response = await this.SendAuthenticatedAsync(request.Request(this._apiKey.Host), token.Token);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var body = await response.Content.ReadAsStringAsync();
+
+                var withdrawal = JsonSerializer.Deserialize<WithdrawalResponse>(body);
+
+                if (withdrawal.Signature == withdrawal.CalculateSignature(this._signatureService))
+                    return withdrawal;
+
+                throw new Exception($"Signature error, response signature: {withdrawal.Signature}, calculated signature: {withdrawal.CalculateSignature(this._signatureService)}");
+            }
+
+            throw new Exception(response.ToString());
+        }
+
+        public async Task<List<WithdrawalResponse>> GetWithdrawals(GetWithdrawalsRequest request)
+        {
+            var token = await GetCachedToken();
+
+            var response = await this.SendAuthenticatedAsync(request.Request(this._apiKey.Host), token.Token);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var body = await response.Content.ReadAsStringAsync();
+
+                var withdrawals = JsonSerializer.Deserialize<List<WithdrawalResponse>>(body);
+
+                if (withdrawals.All(a => a.Signature == a.CalculateSignature(this._signatureService)))
+                    return withdrawals;
+
+                throw new Exception($"Signature error.");
+
+
+            }
+
+            throw new Exception(response.ToString());
+        }
+
+        #endregion
+
+        #region Refunds
+        public async Task<RefundPaymentResponse> RefundPayment(RefundPaymentRequest request)
+        {
+            var token = await GetCachedToken();
+
+            request.SignRequest(this._signatureService);
+
+            ValidateModel(request);
+
+            var response = await this.SendAuthenticatedAsync(request.Request(this._apiKey.Host), token.Token);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var body = await response.Content.ReadAsStringAsync();
+
+                var refund = JsonSerializer.Deserialize<RefundPaymentResponse>(body);
+
+                if (refund.Signature == refund.CalculateSignature(this._signatureService))
+                    return refund;
+
+                throw new Exception($"Signature error, response signature: {refund.Signature}, calculated signature: {refund.CalculateSignature(this._signatureService)}");
+            }
+
+            throw new Exception(response.ToString());
+        }
+        #endregion
+
+
+        #region Payment Methods
+        public async Task<List<GetPaymentMethodsResponse>> GetPaymentMethods(GetPaymentMethodsRequest request)
+        {
+            var token = await GetCachedToken();
+
+            var response = await this.SendAuthenticatedAsync(request.Request(this._apiKey.Host), token.Token);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var body = await response.Content.ReadAsStringAsync();
+
+                var listPaymentMethods = JsonSerializer.Deserialize<List<GetPaymentMethodsResponse>>(body);
+                return listPaymentMethods;
+
+            }
+
+            throw new Exception(response.ToString());
+        }
+
+        #endregion
+
+
+        #region Balance
+
+        public async Task<List<GetBalanceResponse>> GetBalance(GetBalanceRequest request)
+        {
+            var token = await GetCachedToken();
+
+            var response = await this.SendAuthenticatedAsync(request.Request(this._apiKey.Host), token.Token);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var body = await response.Content.ReadAsStringAsync();
+
+                var balance = JsonSerializer.Deserialize<List<GetBalanceResponse>>(body);
+                return balance;
+
+            }
+
+            throw new Exception(response.ToString());
+        }
+        #endregion
+
+        #region Callers
         private async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request)
         {
             using (var _client = new HttpClient(this._clientHandler, false))
@@ -112,6 +327,7 @@ namespace Payout.Lib.Services
 
         private async Task<HttpResponseMessage> SendAuthenticatedAsync(HttpRequestMessage request, string token)
         {
+
             using (var _client = new HttpClient(this._clientHandler, false))
             {
                 _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -121,5 +337,19 @@ namespace Payout.Lib.Services
                 return await _client.SendAsync(request);
             }
         }
+        #endregion
+
+
+
+
+        static void ValidateModel<T>(T obj)
+        {
+            ICollection<ValidationResult> results = new List<ValidationResult>();
+
+            if (!Validator.TryValidateObject(obj, new ValidationContext(obj), results, true))
+                throw new Exception(string.Join("\n", results.Select(o => o.ErrorMessage)));
+        }
+
+
     }
 }

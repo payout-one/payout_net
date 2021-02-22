@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.Net.Http;
 using System.Text.Json.Serialization;
 
@@ -7,6 +8,8 @@ namespace Payout.Lib.Base
     {
         public string Host { get; set; }
 
+
+        [StringLength(50)]
         [JsonPropertyName("idempotency_key")]
         public string IdempotencyKey { get; set; }
 
