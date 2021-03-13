@@ -1,6 +1,6 @@
+using Payout.Lib.Interfaces;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-using Payout.Lib.Interfaces;
 
 namespace Payout.Lib.Base
 {

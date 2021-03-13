@@ -1,11 +1,8 @@
-﻿using System;
-using Payout.Lib;
+﻿using Payout.Lib;
+using Payout.Lib.Models;
 using Payout.Lib.Requests;
 using Payout.Lib.Services;
-using Payout.Lib.Models;
-using System;
 using Xunit;
-using System.Text.Json;
 
 
 namespace payout_tests
@@ -20,12 +17,9 @@ namespace payout_tests
 
             var response = await clientService.GetBalance(new GetBalanceRequest());
 
-
-            Console.WriteLine(JsonSerializer.Serialize(response));
-
             Assert.True(response != null);
         }
 
-     
+
     }
 }

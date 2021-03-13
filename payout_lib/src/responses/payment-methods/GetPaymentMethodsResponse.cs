@@ -4,6 +4,5 @@ namespace Payout.Lib.Responses
 {
     public class GetPaymentMethodsResponse : PaymentMethod
     {
-      
     }
 }

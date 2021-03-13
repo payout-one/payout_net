@@ -1,11 +1,11 @@
-using System.Text.Json.Serialization;
 using Payout.Lib.Base;
 using Payout.Lib.Interfaces;
 using Payout.Lib.Models;
+using System.Text.Json.Serialization;
 
 namespace Payout.Lib.Responses
 {
-    public class CheckoutResponse :  BaseSignedResponse
+    public class CheckoutResponse : BaseSignedResponse
     {
         [JsonPropertyName("amount")]
         public int Amount { get; set; }

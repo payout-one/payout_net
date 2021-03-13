@@ -1,7 +1,4 @@
 ﻿using Payout.Lib.Base;
-using Payout.Lib.Interfaces;
-using Payout.Lib.Models;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Net.Http;
 using System.Text;

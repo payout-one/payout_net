@@ -2,7 +2,7 @@
 
 namespace Payout.Lib.Models
 {
-   public class PaymentMethod
+    public class PaymentMethod
     {
         [JsonPropertyName("fixed_fee")]
         public int FixedFee { get; set; }

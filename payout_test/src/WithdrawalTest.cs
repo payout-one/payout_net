@@ -1,11 +1,10 @@
 ﻿using Payout.Lib;
+using Payout.Lib.Models;
 using Payout.Lib.Requests;
 using Payout.Lib.Services;
-using Payout.Lib.Models;
 using System;
-using Xunit;
-using System.Text.Json;
 using System.Linq;
+using Xunit;
 
 namespace payout_tests
 {
@@ -19,7 +18,7 @@ namespace payout_tests
             var signatureService = new SignatureService { ApiKey = apiKey };
 
             var response = await clientService.GetWithdrawal(new GetWithdrawalRequest { Id = 145 });
-            Console.WriteLine(JsonSerializer.Serialize(response));
+
             Assert.True(response != null);
             Assert.True(response.Signature == response.CalculateSignature(signatureService));
         }
@@ -32,7 +31,7 @@ namespace payout_tests
             var signatureService = new SignatureService { ApiKey = apiKey };
 
             var response = await clientService.GetWithdrawals(new GetWithdrawalsRequest { Limit = 50, Offset = 0 });
-            Console.WriteLine(JsonSerializer.Serialize(response));
+
             Assert.True(response != null);
             Assert.True(response.All(a => a.Signature == a.CalculateSignature(signatureService)));
         }
@@ -62,9 +61,6 @@ namespace payout_tests
                 Iban = "SK6807200002891987426353"
 
             });
-
-
-            Console.WriteLine(JsonSerializer.Serialize(response));
 
             Assert.True(response != null);
             Assert.True(response.Signature == response.CalculateSignature(signatureService));

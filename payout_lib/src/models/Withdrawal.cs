@@ -1,12 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
-
-
-using Payout.Lib.Base;
+﻿using System.Text.Json.Serialization;
 
 namespace Payout.Lib.Models
 {
-    public class Withdrawal 
+    public class Withdrawal
     {
         [JsonPropertyName("id")]
         public int Id { get; set; }

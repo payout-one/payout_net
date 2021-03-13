@@ -1,17 +1,16 @@
 ﻿using Payout.Lib;
+using Payout.Lib.Models;
 using Payout.Lib.Requests;
 using Payout.Lib.Services;
-using Payout.Lib.Models;
 using System;
 using Xunit;
-using System.Text.Json;
 
 
 namespace payout_tests
 {
     public class RefundTest
     {
-     
+
         [Fact]
         public async void RefundPayment()
         {
@@ -27,11 +26,12 @@ namespace payout_tests
                 StatementDescriptor = "test",
                 Nonce = "ZUc0Mk9sVXZDOXNsdklzMQ"
             });
-        
 
-            Console.WriteLine(JsonSerializer.Serialize(response));
 
             Assert.True(response != null);
+
+
+           
         }
     }
 }

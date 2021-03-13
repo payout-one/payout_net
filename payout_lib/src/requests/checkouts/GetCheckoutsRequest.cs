@@ -1,9 +1,9 @@
-﻿using System.Net.Http;
-using Payout.Lib.Base;
+﻿using Payout.Lib.Base;
+using System.Net.Http;
 
 namespace Payout.Lib.Requests
 {
-   public class GetCheckoutsRequest : BaseRequest
+    public class GetCheckoutsRequest : BaseRequest
     {
         public int Limit { get; set; }
         public int Offset { get; set; }

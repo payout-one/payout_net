@@ -1,7 +1,7 @@
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using Payout.Lib.Base;
 using Payout.Lib.Interfaces;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Payout.Lib.Notifications
 {

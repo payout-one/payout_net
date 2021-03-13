@@ -1,12 +1,11 @@
 using Payout.Lib;
+using Payout.Lib.Models;
 using Payout.Lib.Requests;
 using Payout.Lib.Services;
-using Payout.Lib.Models;
 using System;
-using Xunit;
-using System.Text.Json;
 using System.Collections.Generic;
 using System.Linq;
+using Xunit;
 
 namespace payout_tests
 {
@@ -21,10 +20,10 @@ namespace payout_tests
 
 
             var response = await clientService.GetCheckout(new GetCheckoutRequest { Id = 480047 });
-            Console.WriteLine(JsonSerializer.Serialize(response));
+
             Assert.True(response != null);
             Assert.True(response.Signature == response.CalculateSignature(signatureService));
-           
+
         }
 
         [Fact]
@@ -35,7 +34,7 @@ namespace payout_tests
             var signatureService = new SignatureService { ApiKey = apiKey };
 
             var response = await clientService.GetCheckouts(new GetCheckoutsRequest { Limit = 50, Offset = 0 });
-            Console.WriteLine(JsonSerializer.Serialize(response));
+
             Assert.True(response != null);
             Assert.True(response.All(a => a.Signature == a.CalculateSignature(signatureService)));
         }
@@ -88,8 +87,6 @@ namespace payout_tests
                 Products = products,
                 RedirectUrl = "https://payout.one/payment/redirect",
             });
-
-            Console.WriteLine(JsonSerializer.Serialize(response));
 
             Assert.True(response != null);
             Assert.True(response.Signature == response.CalculateSignature(signatureService));

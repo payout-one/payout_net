@@ -1,15 +1,15 @@
-using System;
-using System.Text.Json;
-using System.Threading.Tasks;
 using Payout.Lib.Interfaces;
+using Payout.Lib.Models;
 using Payout.Lib.Requests;
 using Payout.Lib.Responses;
-using Payout.Lib.Models;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Collections.Generic;
-using System.Linq;
-using System.ComponentModel.DataAnnotations;
+using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace Payout.Lib.Services
 {
@@ -25,7 +25,6 @@ namespace Payout.Lib.Services
         {
             this._clientHandler = new HttpClientHandler(); ;
             this._signatureService = new SignatureService { ApiKey = apiKey };
-
             this._apiKey = apiKey;
         }
 
@@ -101,7 +100,6 @@ namespace Payout.Lib.Services
         #region Checkout
         public async Task<CheckoutResponse> CreateCheckout(CreateCheckoutRequest request)
         {
-
             var token = await GetCachedToken();
 
             request.SignRequest(this._signatureService);
@@ -170,7 +168,6 @@ namespace Payout.Lib.Services
 
         #endregion
 
-
         #region Withdrawals
         public async Task<WithdrawalResponse> CreateWithdrawal(CreateWithdrawalRequest request)
         {
@@ -196,6 +193,7 @@ namespace Payout.Lib.Services
 
             throw new Exception(response.ToString());
         }
+
         public async Task<WithdrawalResponse> GetWithdrawal(GetWithdrawalRequest request)
         {
             var token = await GetCachedToken();
@@ -269,7 +267,6 @@ namespace Payout.Lib.Services
         }
         #endregion
 
-
         #region Payment Methods
         public async Task<List<GetPaymentMethodsResponse>> GetPaymentMethods(GetPaymentMethodsRequest request)
         {
@@ -290,7 +287,6 @@ namespace Payout.Lib.Services
         }
 
         #endregion
-
 
         #region Balance
 
@@ -338,10 +334,6 @@ namespace Payout.Lib.Services
             }
         }
         #endregion
-
-
-
-
         static void ValidateModel<T>(T obj)
         {
             ICollection<ValidationResult> results = new List<ValidationResult>();

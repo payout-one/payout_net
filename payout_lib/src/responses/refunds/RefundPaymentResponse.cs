@@ -1,8 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Text.Json.Serialization;
-using Payout.Lib.Base;
+﻿using Payout.Lib.Base;
 using Payout.Lib.Interfaces;
 using Payout.Lib.Models;
+using System.Text.Json.Serialization;
 
 namespace Payout.Lib.Responses
 {
@@ -12,7 +11,7 @@ namespace Payout.Lib.Responses
         public int Amount { get; set; }
 
         [JsonPropertyName("api_key_id")]
-        public string ApiKeyId { get; set; }
+        public int ApiKeyId { get; set; }
 
         [JsonPropertyName("created_at")]
         public long CreatedAt { get; set; }

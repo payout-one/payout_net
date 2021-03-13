@@ -23,7 +23,6 @@ namespace Payout.Lib.Requests
         [JsonPropertyName("customer")]
         public Customer Customer { get; set; }
 
-
         [Required]
         [StringLength(50)]
         [JsonPropertyName("external_id")]
@@ -32,8 +31,6 @@ namespace Payout.Lib.Requests
         [Required]
         [JsonPropertyName("iban")]
         public string Iban { get; set; }
-
-
 
 
         public override HttpRequestMessage Request(string host)
