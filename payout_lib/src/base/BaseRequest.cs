@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace Payout.Lib.Base
 {
-    public abstract class BaseRequest
+    public abstract class BaseRequest : Validation
     {
         public string Host { get; set; }
 

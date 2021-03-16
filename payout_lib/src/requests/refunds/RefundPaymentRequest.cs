@@ -37,8 +37,6 @@ namespace Payout.Lib.Requests
         public string StatementDescriptor { get; set; }
 
 
-
-
         public override HttpRequestMessage Request(string host)
         {
             return new HttpRequestMessage(HttpMethod.Post, $"https://{host}/api/v1/refunds")
@@ -50,7 +48,5 @@ namespace Payout.Lib.Requests
         public override object[] signatureParams() => new object[] {
            this.Amount, this.Currency, this.ExternalId, this.Iban, this.Nonce
         };
-
-
     }
 }

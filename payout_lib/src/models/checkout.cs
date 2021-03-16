@@ -5,7 +5,6 @@ namespace Payout.Lib.Models
 {
     public class Checkout
     {
-
         [JsonPropertyName("amount")]
         public int Amount { get; set; }
 
@@ -29,7 +28,6 @@ namespace Payout.Lib.Models
 
         [JsonPropertyName("metadata")]
         public object Metadata { get; set; }
-
 
         [JsonPropertyName("object")]
         public string Object { get; set; }

@@ -18,7 +18,6 @@ namespace payout_tests
             var apiKey = new ApiKey { Key = Constants.KEY, Secret = Constants.SECRET };
             var signatureService = new SignatureService { ApiKey = apiKey };
 
-
             var response = await clientService.GetCheckout(new GetCheckoutRequest { Id = 480047 });
 
             Assert.True(response != null);

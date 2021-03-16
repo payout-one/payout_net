@@ -9,7 +9,6 @@ namespace payout_tests
 {
     public class BalanceTest
     {
-
         [Fact]
         public async void GetBalance()
         {
@@ -19,7 +18,5 @@ namespace payout_tests
 
             Assert.True(response != null);
         }
-
-
     }
 }

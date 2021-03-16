@@ -9,7 +9,6 @@ namespace payout_tests
 {
     public class PaymentMethodTest
     {
-
         [Fact]
         public async void GetPaymentsMethods()
         {

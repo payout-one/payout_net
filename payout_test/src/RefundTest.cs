@@ -10,7 +10,6 @@ namespace payout_tests
 {
     public class RefundTest
     {
-
         [Fact]
         public async void RefundPayment()
         {
@@ -27,11 +26,7 @@ namespace payout_tests
                 Nonce = "ZUc0Mk9sVXZDOXNsdklzMQ"
             });
 
-
-            Assert.True(response != null);
-
-
-           
+            Assert.True(response != null);       
         }
     }
 }

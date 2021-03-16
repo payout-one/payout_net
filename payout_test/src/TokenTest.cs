@@ -9,7 +9,6 @@ namespace payout_tests
 {
     public class TokenTest
     {
-
         [Fact]
         public async void GetTokenStatus()
         {

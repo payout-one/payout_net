@@ -11,8 +11,7 @@ namespace payout_tests
     {
         [Fact]
         public void BankTransferNotificationTest()
-        {
-            //var apiKey = new ApiKey { Key = Constants.KEY, Secret = Constants.SECRET };
+        {          
             var apiKey = new ApiKey { Key = "00706602-bcb6-48e1-939b-b3f02626f2e0", Secret = "zXqWzZMCaa7F7GiT64Vnd7Yy0CoqaaHpUySxHfSfE9AF8QBtToo0WYO5y-BTwl0L" };
             var signatureService = new SignatureService { ApiKey = apiKey };
 
@@ -26,8 +25,7 @@ namespace payout_tests
 
         [Fact]
         public void PaymentNotificationTest()
-        {
-            //var apiKey = new ApiKey { Key = Constants.KEY, Secret = Constants.SECRET };
+        {           
             var apiKey = new ApiKey { Key = "00706602-bcb6-48e1-939b-b3f02626f2e0", Secret = "zXqWzZMCaa7F7GiT64Vnd7Yy0CoqaaHpUySxHfSfE9AF8QBtToo0WYO5y-BTwl0L" };
             var signatureService = new SignatureService { ApiKey = apiKey };
 

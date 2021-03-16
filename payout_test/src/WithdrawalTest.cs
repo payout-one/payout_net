@@ -50,7 +50,7 @@ namespace payout_tests
                 Currency = "EUR",
                 Customer = new Customer
                 {
-                    Email = "dotnettest@payout.one",
+                    Email = "test@test.host.sandbox",
                     FirstName = "Janko",
                     LastName = "Pokusny",
                     Phone = "421-999999999"

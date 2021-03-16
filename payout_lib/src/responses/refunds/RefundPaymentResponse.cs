@@ -10,9 +10,6 @@ namespace Payout.Lib.Responses
         [JsonPropertyName("amount")]
         public int Amount { get; set; }
 
-        [JsonPropertyName("api_key_id")]
-        public int ApiKeyId { get; set; }
-
         [JsonPropertyName("created_at")]
         public long CreatedAt { get; set; }
 

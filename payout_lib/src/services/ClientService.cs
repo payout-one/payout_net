@@ -4,7 +4,6 @@ using Payout.Lib.Requests;
 using Payout.Lib.Responses;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -62,8 +61,10 @@ namespace Payout.Lib.Services
 
         #region Token
         public async Task<GetTokenStatusResponse> GetTokenStatus(GetTokenStatusRequest request)
-        {
+        {           
             var token = await GetCachedToken();
+
+            request.ModelValidation();
 
             var response = await this.SendAuthenticatedAsync(request.Request(this._apiKey.Host), token.Token);
 
@@ -73,14 +74,15 @@ namespace Payout.Lib.Services
 
                 var tokenStatus = JsonSerializer.Deserialize<GetTokenStatusResponse>(body);
                 return tokenStatus;
-
             }
 
             throw new Exception(response.ToString());
         }
         public async Task<DeleteTokenResponse> DeleteToken(DeleteTokenRequest request)
-        {
+        {           
             var token = await GetCachedToken();
+
+            request.ModelValidation();
 
             var response = await this.SendAuthenticatedAsync(request.Request(this._apiKey.Host), token.Token);
 
@@ -90,7 +92,6 @@ namespace Payout.Lib.Services
 
                 var tokenStatus = JsonSerializer.Deserialize<DeleteTokenResponse>(body);
                 return tokenStatus;
-
             }
 
             throw new Exception(response.ToString());
@@ -104,7 +105,7 @@ namespace Payout.Lib.Services
 
             request.SignRequest(this._signatureService);
 
-            ValidateModel(request);
+            request.ModelValidation();
 
             var response = await this.SendAuthenticatedAsync(request.Request(this._apiKey.Host), token.Token);
 
@@ -120,13 +121,14 @@ namespace Payout.Lib.Services
                 throw new Exception($"Signature error, response signature: {checkout.Signature}, calculated signature: {checkout.CalculateSignature(this._signatureService)}");
             }
 
-
             throw new Exception(response.ToString());
         }
 
         public async Task<CheckoutResponse> GetCheckout(GetCheckoutRequest request)
         {
             var token = await GetCachedToken();
+
+            request.ModelValidation();
 
             var response = await this.SendAuthenticatedAsync(request.Request(this._apiKey.Host), token.Token);
 
@@ -148,6 +150,8 @@ namespace Payout.Lib.Services
         public async Task<List<CheckoutResponse>> GetCheckouts(GetCheckoutsRequest request)
         {
             var token = await GetCachedToken();
+
+            request.ModelValidation();
 
             var response = await this.SendAuthenticatedAsync(request.Request(this._apiKey.Host), token.Token);
 
@@ -175,7 +179,7 @@ namespace Payout.Lib.Services
 
             request.SignRequest(this._signatureService);
 
-            ValidateModel(request);
+            request.ModelValidation();
 
             var response = await this.SendAuthenticatedAsync(request.Request(this._apiKey.Host), token.Token);
 
@@ -198,6 +202,8 @@ namespace Payout.Lib.Services
         {
             var token = await GetCachedToken();
 
+            request.ModelValidation();
+
             var response = await this.SendAuthenticatedAsync(request.Request(this._apiKey.Host), token.Token);
 
             if (response.IsSuccessStatusCode)
@@ -219,6 +225,8 @@ namespace Payout.Lib.Services
         {
             var token = await GetCachedToken();
 
+            request.ModelValidation();
+
             var response = await this.SendAuthenticatedAsync(request.Request(this._apiKey.Host), token.Token);
 
             if (response.IsSuccessStatusCode)
@@ -231,8 +239,6 @@ namespace Payout.Lib.Services
                     return withdrawals;
 
                 throw new Exception($"Signature error.");
-
-
             }
 
             throw new Exception(response.ToString());
@@ -247,7 +253,7 @@ namespace Payout.Lib.Services
 
             request.SignRequest(this._signatureService);
 
-            ValidateModel(request);
+            request.ModelValidation();
 
             var response = await this.SendAuthenticatedAsync(request.Request(this._apiKey.Host), token.Token);
 
@@ -272,6 +278,8 @@ namespace Payout.Lib.Services
         {
             var token = await GetCachedToken();
 
+            request.ModelValidation();
+
             var response = await this.SendAuthenticatedAsync(request.Request(this._apiKey.Host), token.Token);
 
             if (response.IsSuccessStatusCode)
@@ -280,7 +288,6 @@ namespace Payout.Lib.Services
 
                 var listPaymentMethods = JsonSerializer.Deserialize<List<GetPaymentMethodsResponse>>(body);
                 return listPaymentMethods;
-
             }
 
             throw new Exception(response.ToString());
@@ -293,6 +300,8 @@ namespace Payout.Lib.Services
         public async Task<List<GetBalanceResponse>> GetBalance(GetBalanceRequest request)
         {
             var token = await GetCachedToken();
+
+            request.ModelValidation();
 
             var response = await this.SendAuthenticatedAsync(request.Request(this._apiKey.Host), token.Token);
 
@@ -322,8 +331,7 @@ namespace Payout.Lib.Services
         }
 
         private async Task<HttpResponseMessage> SendAuthenticatedAsync(HttpRequestMessage request, string token)
-        {
-
+        {             
             using (var _client = new HttpClient(this._clientHandler, false))
             {
                 _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -334,13 +342,7 @@ namespace Payout.Lib.Services
             }
         }
         #endregion
-        static void ValidateModel<T>(T obj)
-        {
-            ICollection<ValidationResult> results = new List<ValidationResult>();
 
-            if (!Validator.TryValidateObject(obj, new ValidationContext(obj), results, true))
-                throw new Exception(string.Join("\n", results.Select(o => o.ErrorMessage)));
-        }
 
 
     }

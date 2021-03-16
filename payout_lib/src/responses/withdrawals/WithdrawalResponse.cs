@@ -1,8 +1,7 @@
-﻿using System.Runtime.Serialization;
-using System.Text.Json.Serialization;
-using Payout.Lib.Base;
+﻿using Payout.Lib.Base;
 using Payout.Lib.Interfaces;
 using Payout.Lib.Models;
+using System.Text.Json.Serialization;
 
 namespace Payout.Lib.Responses
 {
@@ -22,9 +21,6 @@ namespace Payout.Lib.Responses
 
         [JsonPropertyName("external_id")]
         public string ExternalId { get; set; }
-
-        [JsonPropertyName("api_key_id")]
-        public int? ApiKeyId { get; set; }
 
         [JsonPropertyName("iban")]
         public string Iban { get; set; }
