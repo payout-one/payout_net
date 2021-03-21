@@ -3,7 +3,7 @@
 
 namespace Payout.Lib.Responses
 {
-    public class GetTokenStatusResponse
+    public class TokenStatusResponse
     {
         [JsonPropertyName("cardExpirationYear")]
         public string CardExpirationYear { get; set; }

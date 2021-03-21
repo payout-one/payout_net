@@ -11,14 +11,14 @@ namespace Payout.Lib.Interfaces
         Task<AuthResponse> GetCachedToken();
         Task<CheckoutResponse> GetCheckout(GetCheckoutRequest request);
         Task<CheckoutResponse> CreateCheckout(CreateCheckoutRequest request);
-        Task<List<CheckoutResponse>> GetCheckouts(GetCheckoutsRequest request);
-        Task<GetTokenStatusResponse> GetTokenStatus(GetTokenStatusRequest request);
+        Task<CheckoutListResponse> GetCheckouts(GetCheckoutListRequest request);
+        Task<TokenStatusResponse> GetTokenStatus(GetTokenStatusRequest request);
         Task<DeleteTokenResponse> DeleteToken(DeleteTokenRequest request);
         Task<WithdrawalResponse> CreateWithdrawal(CreateWithdrawalRequest request);
         Task<WithdrawalResponse> GetWithdrawal(GetWithdrawalRequest request);
-        Task<List<WithdrawalResponse>> GetWithdrawals(GetWithdrawalsRequest request);
+        Task<WithdrawalListResponse> GetWithdrawals(GetWithdrawalListRequest request);
         Task<RefundPaymentResponse> RefundPayment(RefundPaymentRequest request);
-        Task<List<GetPaymentMethodsResponse>> GetPaymentMethods(GetPaymentMethodsRequest request);
-        Task<List<GetBalanceResponse>> GetBalance(GetBalanceRequest request);
+        Task<PaymentMethodListResponse> GetPaymentMethods(GetPaymentMethodsRequest request);
+        Task<GetBalanceListResponse> GetBalance(GetBalanceRequest request);
     }
 }

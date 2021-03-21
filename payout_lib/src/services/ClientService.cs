@@ -1,8 +1,8 @@
-using Payout.Lib.Base;
 using Payout.Lib.Interfaces;
 using Payout.Lib.Models;
 using Payout.Lib.Requests;
 using Payout.Lib.Responses;
+using Payout.Lib.Validations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +17,7 @@ namespace Payout.Lib.Services
     {
         private readonly HttpClientHandler _clientHandler;
         private readonly SignatureService _signatureService;
+        private readonly RequestValidation _requestValidation;
         private ApiKey _apiKey;
         private AuthResponse _authentication;
         private DateTime _validMax;
@@ -26,6 +27,7 @@ namespace Payout.Lib.Services
             this._clientHandler = new HttpClientHandler(); ;
             this._signatureService = new SignatureService { ApiKey = apiKey };
             this._apiKey = apiKey;
+            this._requestValidation = new RequestValidation();
         }
 
         #region Auth
@@ -59,11 +61,11 @@ namespace Payout.Lib.Services
         #endregion
 
         #region Token
-        public async Task<GetTokenStatusResponse> GetTokenStatus(GetTokenStatusRequest request)
+        public async Task<TokenStatusResponse> GetTokenStatus(GetTokenStatusRequest request)
         {
             var token = await GetCachedToken();
 
-            return await this.SendAuthenticatedAndReturnResultAsync<GetTokenStatusRequest, GetTokenStatusResponse>(request, request.Request(this._apiKey.Host), token.Token);
+            return await this.SendAuthenticatedAndReturnResultAsync<GetTokenStatusRequest, TokenStatusResponse>(request, request.Request(this._apiKey.Host), token.Token);
         }
         public async Task<DeleteTokenResponse> DeleteToken(DeleteTokenRequest request)
         {
@@ -98,14 +100,14 @@ namespace Payout.Lib.Services
 
             throw new Exception($"Signature error, response signature: {checkout.Signature}, calculated signature: {checkout.CalculateSignature(this._signatureService)}");
         }
-        public async Task<List<CheckoutResponse>> GetCheckouts(GetCheckoutsRequest request)
+        public async Task<CheckoutListResponse> GetCheckouts(GetCheckoutListRequest request)
         {
             var token = await GetCachedToken();
 
-            var checkouts = await this.SendAuthenticatedAndReturnResultAsync<GetCheckoutsRequest, List<CheckoutResponse>>(request, request.Request(this._apiKey.Host), token.Token);
+            var response = await this.SendAuthenticatedAndReturnResultAsync<GetCheckoutListRequest, CheckoutListResponse>(request, request.Request(this._apiKey.Host), token.Token);
 
-            if (checkouts.All(a => a.Signature == a.CalculateSignature(this._signatureService)))
-                return checkouts;
+            if (response.All(a => a.Signature == a.CalculateSignature(this._signatureService)))
+                return response;
 
             throw new Exception($"Signature error.");
         }
@@ -136,11 +138,11 @@ namespace Payout.Lib.Services
 
             throw new Exception($"Signature error, response signature: {withdrawal.Signature}, calculated signature: {withdrawal.CalculateSignature(this._signatureService)}");
         }
-        public async Task<List<WithdrawalResponse>> GetWithdrawals(GetWithdrawalsRequest request)
+        public async Task<WithdrawalListResponse> GetWithdrawals(GetWithdrawalListRequest request)
         {
             var token = await GetCachedToken();
 
-            var withdrawals = await this.SendAuthenticatedAndReturnResultAsync<GetWithdrawalsRequest, List<WithdrawalResponse>>(request, request.Request(this._apiKey.Host), token.Token);
+            var withdrawals = await this.SendAuthenticatedAndReturnResultAsync<GetWithdrawalListRequest, WithdrawalListResponse>(request, request.Request(this._apiKey.Host), token.Token);
 
             if (withdrawals.All(a => a.Signature == a.CalculateSignature(this._signatureService)))
                 return withdrawals;
@@ -166,20 +168,20 @@ namespace Payout.Lib.Services
         #endregion
 
         #region Payment Methods
-        public async Task<List<GetPaymentMethodsResponse>> GetPaymentMethods(GetPaymentMethodsRequest request)
+        public async Task<PaymentMethodListResponse> GetPaymentMethods(GetPaymentMethodsRequest request)
         {
             var token = await GetCachedToken();
 
-            return await this.SendAuthenticatedAndReturnResultAsync<GetPaymentMethodsRequest, List<GetPaymentMethodsResponse>>(request, request.Request(this._apiKey.Host), token.Token);
+            return await this.SendAuthenticatedAndReturnResultAsync<GetPaymentMethodsRequest, PaymentMethodListResponse>(request, request.Request(this._apiKey.Host), token.Token);
         }
         #endregion
 
         #region Balance
-        public async Task<List<GetBalanceResponse>> GetBalance(GetBalanceRequest request)
+        public async Task<GetBalanceListResponse> GetBalance(GetBalanceRequest request)
         {
             var token = await GetCachedToken();
 
-            return await this.SendAuthenticatedAndReturnResultAsync<GetBalanceRequest, List<GetBalanceResponse>>(request, request.Request(this._apiKey.Host), token.Token);
+            return await this.SendAuthenticatedAndReturnResultAsync<GetBalanceRequest, GetBalanceListResponse>(request, request.Request(this._apiKey.Host), token.Token);
         }
         #endregion
 
@@ -196,10 +198,11 @@ namespace Payout.Lib.Services
         }
         private async Task<TResponse> SendAuthenticatedAndReturnResultAsync<TRequest, TResponse>
             (TRequest requestModel, HttpRequestMessage request, string token)
-            where TRequest : BaseRequest
+            where TRequest : class
             where TResponse : class
         {
-            requestModel.ModelValidation();
+
+            _requestValidation.ModelValidation(requestModel);
 
             using (var _client = new HttpClient(this._clientHandler, false))
             {

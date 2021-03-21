@@ -18,7 +18,7 @@ namespace ConsoleApp48
             var clientService = new ClientService(apiKey);
 
             var token = await clientService.GetToken();
-            var checkouts = await clientService.GetCheckouts(new GetCheckoutsRequest { Limit = 50, Offset = 0 });
+            var checkouts = await clientService.GetCheckouts(new GetCheckoutListRequest { Limit = 50, Offset = 0 });
         }
     }
 }

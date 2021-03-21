@@ -30,7 +30,7 @@ namespace payout_tests
             var apiKey = new ApiKey { Key = Constants.KEY, Secret = Constants.SECRET };
             var signatureService = new SignatureService { ApiKey = apiKey };
 
-            var response = await clientService.GetWithdrawals(new GetWithdrawalsRequest { Limit = 50, Offset = 0 });
+            var response = await clientService.GetWithdrawals(new GetWithdrawalListRequest { Limit = 50, Offset = 0 });
 
             Assert.True(response != null);
             Assert.True(response.All(a => a.Signature == a.CalculateSignature(signatureService)));
