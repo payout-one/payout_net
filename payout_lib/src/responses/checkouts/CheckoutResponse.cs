@@ -8,7 +8,7 @@ namespace Payout.Lib.Responses
     public class CheckoutResponse : BaseSignedResponse
     {
         [JsonPropertyName("amount")]
-        public int Amount { get; set; }
+        public decimal Amount { get; set; }
 
         [JsonPropertyName("currency")]
         public string Currency { get; set; }

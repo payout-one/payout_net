@@ -1,10 +1,10 @@
+using Payout.Lib.Base;
 using Payout.Lib.Interfaces;
 using Payout.Lib.Models;
 using Payout.Lib.Requests;
 using Payout.Lib.Responses;
 using Payout.Lib.Validations;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -16,8 +16,8 @@ namespace Payout.Lib.Services
     public class ClientService : IPayoutClient
     {
         private readonly HttpClientHandler _clientHandler;
-        private readonly SignatureService _signatureService;
-        private readonly RequestValidation _requestValidation;
+        private readonly SignatureService _signatureService;     
+        private readonly ModelValidation _modelValidation;
         private ApiKey _apiKey;
         private AuthResponse _authentication;
         private DateTime _validMax;
@@ -27,7 +27,7 @@ namespace Payout.Lib.Services
             this._clientHandler = new HttpClientHandler(); ;
             this._signatureService = new SignatureService { ApiKey = apiKey };
             this._apiKey = apiKey;
-            this._requestValidation = new RequestValidation();
+            this._modelValidation = new ModelValidation();
         }
 
         #region Auth
@@ -63,26 +63,21 @@ namespace Payout.Lib.Services
         #region Token
         public async Task<TokenStatusResponse> GetTokenStatus(GetTokenStatusRequest request)
         {
-            var token = await GetCachedToken();
-
-            return await this.SendAuthenticatedAndReturnResultAsync<GetTokenStatusRequest, TokenStatusResponse>(request, request.Request(this._apiKey.Host), token.Token);
+            return await this.AuthenticatedSendAsync<GetTokenStatusRequest, TokenStatusResponse>(request, request.Request(this._apiKey.Host));
         }
         public async Task<DeleteTokenResponse> DeleteToken(DeleteTokenRequest request)
         {
-            var token = await GetCachedToken();
-
-            return await this.SendAuthenticatedAndReturnResultAsync<DeleteTokenRequest, DeleteTokenResponse>(request, request.Request(this._apiKey.Host), token.Token);
+            return await this.AuthenticatedSendAsync<DeleteTokenRequest, DeleteTokenResponse>(request, request.Request(this._apiKey.Host));
         }
         #endregion
 
         #region Checkout
         public async Task<CheckoutResponse> CreateCheckout(CreateCheckoutRequest request)
         {
-            var token = await GetCachedToken();
 
             request.SignRequest(this._signatureService);
 
-            var checkout = await this.SendAuthenticatedAndReturnResultAsync<CreateCheckoutRequest, CheckoutResponse>(request, request.Request(this._apiKey.Host), token.Token);
+            var checkout = await this.AuthenticatedSendAsync<CreateCheckoutRequest, CheckoutResponse>(request, request.Request(this._apiKey.Host));
 
             if (checkout.Signature == checkout.CalculateSignature(this._signatureService))
                 return checkout;
@@ -91,9 +86,7 @@ namespace Payout.Lib.Services
         }
         public async Task<CheckoutResponse> GetCheckout(GetCheckoutRequest request)
         {
-            var token = await GetCachedToken();
-
-            var checkout = await this.SendAuthenticatedAndReturnResultAsync<GetCheckoutRequest, CheckoutResponse>(request, request.Request(this._apiKey.Host), token.Token);
+            var checkout = await this.AuthenticatedSendAsync<GetCheckoutRequest, CheckoutResponse>(request, request.Request(this._apiKey.Host));
 
             if (checkout.Signature == checkout.CalculateSignature(this._signatureService))
                 return checkout;
@@ -102,9 +95,7 @@ namespace Payout.Lib.Services
         }
         public async Task<CheckoutListResponse> GetCheckouts(GetCheckoutListRequest request)
         {
-            var token = await GetCachedToken();
-
-            var response = await this.SendAuthenticatedAndReturnResultAsync<GetCheckoutListRequest, CheckoutListResponse>(request, request.Request(this._apiKey.Host), token.Token);
+            var response = await this.AuthenticatedSendAsync<GetCheckoutListRequest, CheckoutListResponse>(request, request.Request(this._apiKey.Host));
 
             if (response.All(a => a.Signature == a.CalculateSignature(this._signatureService)))
                 return response;
@@ -116,11 +107,10 @@ namespace Payout.Lib.Services
         #region Withdrawals
         public async Task<WithdrawalResponse> CreateWithdrawal(CreateWithdrawalRequest request)
         {
-            var token = await GetCachedToken();
-
+           
             request.SignRequest(this._signatureService);
 
-            var withdrawal = await this.SendAuthenticatedAndReturnResultAsync<CreateWithdrawalRequest, WithdrawalResponse>(request, request.Request(this._apiKey.Host), token.Token);
+            var withdrawal = await this.AuthenticatedSendAsync<CreateWithdrawalRequest, WithdrawalResponse>(request, request.Request(this._apiKey.Host));
 
             if (withdrawal.Signature == withdrawal.CalculateSignature(this._signatureService))
                 return withdrawal;
@@ -129,9 +119,7 @@ namespace Payout.Lib.Services
         }
         public async Task<WithdrawalResponse> GetWithdrawal(GetWithdrawalRequest request)
         {
-            var token = await GetCachedToken();
-
-            var withdrawal = await this.SendAuthenticatedAndReturnResultAsync<GetWithdrawalRequest, WithdrawalResponse>(request, request.Request(this._apiKey.Host), token.Token);
+            var withdrawal = await this.AuthenticatedSendAsync<GetWithdrawalRequest, WithdrawalResponse>(request, request.Request(this._apiKey.Host));
 
             if (withdrawal.Signature == withdrawal.CalculateSignature(this._signatureService))
                 return withdrawal;
@@ -140,9 +128,7 @@ namespace Payout.Lib.Services
         }
         public async Task<WithdrawalListResponse> GetWithdrawals(GetWithdrawalListRequest request)
         {
-            var token = await GetCachedToken();
-
-            var withdrawals = await this.SendAuthenticatedAndReturnResultAsync<GetWithdrawalListRequest, WithdrawalListResponse>(request, request.Request(this._apiKey.Host), token.Token);
+            var withdrawals = await this.AuthenticatedSendAsync<GetWithdrawalListRequest, WithdrawalListResponse>(request, request.Request(this._apiKey.Host));
 
             if (withdrawals.All(a => a.Signature == a.CalculateSignature(this._signatureService)))
                 return withdrawals;
@@ -154,11 +140,9 @@ namespace Payout.Lib.Services
         #region Refunds
         public async Task<RefundPaymentResponse> RefundPayment(RefundPaymentRequest request)
         {
-            var token = await GetCachedToken();
-
             request.SignRequest(this._signatureService);
-
-            var refund = await this.SendAuthenticatedAndReturnResultAsync<RefundPaymentRequest, RefundPaymentResponse>(request, request.Request(this._apiKey.Host), token.Token);
+            
+            var refund = await this.AuthenticatedSendAsync<RefundPaymentRequest, RefundPaymentResponse>(request, request.Request(this._apiKey.Host));
 
             if (refund.Signature == refund.CalculateSignature(this._signatureService))
                 return refund;
@@ -170,18 +154,14 @@ namespace Payout.Lib.Services
         #region Payment Methods
         public async Task<PaymentMethodListResponse> GetPaymentMethods(GetPaymentMethodsRequest request)
         {
-            var token = await GetCachedToken();
-
-            return await this.SendAuthenticatedAndReturnResultAsync<GetPaymentMethodsRequest, PaymentMethodListResponse>(request, request.Request(this._apiKey.Host), token.Token);
+            return await this.AuthenticatedSendAsync<GetPaymentMethodsRequest, PaymentMethodListResponse>(request, request.Request(this._apiKey.Host));
         }
         #endregion
 
         #region Balance
         public async Task<GetBalanceListResponse> GetBalance(GetBalanceRequest request)
         {
-            var token = await GetCachedToken();
-
-            return await this.SendAuthenticatedAndReturnResultAsync<GetBalanceRequest, GetBalanceListResponse>(request, request.Request(this._apiKey.Host), token.Token);
+            return await this.AuthenticatedSendAsync<GetBalanceRequest, GetBalanceListResponse>(request, request.Request(this._apiKey.Host));
         }
         #endregion
 
@@ -196,18 +176,19 @@ namespace Payout.Lib.Services
                 return await _client.SendAsync(request);
             }
         }
-        private async Task<TResponse> SendAuthenticatedAndReturnResultAsync<TRequest, TResponse>
-            (TRequest requestModel, HttpRequestMessage request, string token)
-            where TRequest : class
+        private async Task<TResponse> AuthenticatedSendAsync<TRequest, TResponse>
+            (TRequest requestModel, HttpRequestMessage request)
+            where TRequest : BaseRequest
             where TResponse : class
         {
+            requestModel.ValidateRequest(this._modelValidation);
 
-            _requestValidation.ModelValidation(requestModel);
+            var token = await GetCachedToken();
 
             using (var _client = new HttpClient(this._clientHandler, false))
             {
                 _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.Token);
                 _client.DefaultRequestHeaders.Add("User-Agent", "Payout .NET library");
 
                 var response = await _client.SendAsync(request);
