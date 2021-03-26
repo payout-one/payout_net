@@ -16,7 +16,7 @@ namespace Payout.Lib.Services
     public class ClientService : IPayoutClient
     {
         private readonly HttpClientHandler _clientHandler;
-        private readonly SignatureService _signatureService;     
+        private readonly SignatureService _signatureService;
         private readonly ModelValidation _modelValidation;
         private ApiKey _apiKey;
         private AuthResponse _authentication;
@@ -107,7 +107,6 @@ namespace Payout.Lib.Services
         #region Withdrawals
         public async Task<WithdrawalResponse> CreateWithdrawal(CreateWithdrawalRequest request)
         {
-           
             request.SignRequest(this._signatureService);
 
             var withdrawal = await this.AuthenticatedSendAsync<CreateWithdrawalRequest, WithdrawalResponse>(request, request.Request(this._apiKey.Host));
@@ -141,7 +140,7 @@ namespace Payout.Lib.Services
         public async Task<RefundPaymentResponse> RefundPayment(RefundPaymentRequest request)
         {
             request.SignRequest(this._signatureService);
-            
+
             var refund = await this.AuthenticatedSendAsync<RefundPaymentRequest, RefundPaymentResponse>(request, request.Request(this._apiKey.Host));
 
             if (refund.Signature == refund.CalculateSignature(this._signatureService))
@@ -176,10 +175,7 @@ namespace Payout.Lib.Services
                 return await _client.SendAsync(request);
             }
         }
-        private async Task<TResponse> AuthenticatedSendAsync<TRequest, TResponse>
-            (TRequest requestModel, HttpRequestMessage request)
-            where TRequest : BaseRequest
-            where TResponse : class
+        private async Task<TResponse> AuthenticatedSendAsync<TRequest, TResponse>(TRequest requestModel, HttpRequestMessage request) where TRequest : BaseRequest
         {
             requestModel.ValidateRequest(this._modelValidation);
 
