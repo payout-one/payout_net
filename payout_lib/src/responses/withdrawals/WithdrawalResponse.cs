@@ -40,7 +40,6 @@ namespace Payout.Lib.Responses
         [JsonPropertyName("created_at")]
         public int CreatedAt { get; set; }
 
-
         public override string CalculateSignature(IPayoutSignature signature)
         {
             return signature.SignResponse(this);

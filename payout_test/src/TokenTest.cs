@@ -4,7 +4,6 @@ using Payout.Lib.Requests;
 using Payout.Lib.Services;
 using Xunit;
 
-
 namespace payout_tests
 {
     public class TokenTest

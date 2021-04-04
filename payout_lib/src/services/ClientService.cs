@@ -31,6 +31,7 @@ namespace Payout.Lib.Services
         }
 
         #region Auth
+
         public async Task<AuthResponse> GetToken()
         {
             var request = new AuthRequest { ApiKey = this._apiKey };
@@ -49,6 +50,7 @@ namespace Payout.Lib.Services
 
             throw new UnauthorizedAccessException(response.ToString());
         }
+
         public async Task<AuthResponse> GetCachedToken()
         {
             if (this._validMax < DateTime.Now)
@@ -58,23 +60,27 @@ namespace Payout.Lib.Services
 
             return this._authentication;
         }
-        #endregion
+
+        #endregion Auth
 
         #region Token
+
         public async Task<TokenStatusResponse> GetTokenStatus(GetTokenStatusRequest request)
         {
             return await this.AuthenticatedSendAsync<GetTokenStatusRequest, TokenStatusResponse>(request, request.Request(this._apiKey.Host));
         }
+
         public async Task<DeleteTokenResponse> DeleteToken(DeleteTokenRequest request)
         {
             return await this.AuthenticatedSendAsync<DeleteTokenRequest, DeleteTokenResponse>(request, request.Request(this._apiKey.Host));
         }
-        #endregion
+
+        #endregion Token
 
         #region Checkout
+
         public async Task<CheckoutResponse> CreateCheckout(CreateCheckoutRequest request)
         {
-
             request.SignRequest(this._signatureService);
 
             var checkout = await this.AuthenticatedSendAsync<CreateCheckoutRequest, CheckoutResponse>(request, request.Request(this._apiKey.Host));
@@ -84,6 +90,7 @@ namespace Payout.Lib.Services
 
             throw new Exception($"Signature error, response signature: {checkout.Signature}, calculated signature: {checkout.CalculateSignature(this._signatureService)}");
         }
+
         public async Task<CheckoutResponse> GetCheckout(GetCheckoutRequest request)
         {
             var checkout = await this.AuthenticatedSendAsync<GetCheckoutRequest, CheckoutResponse>(request, request.Request(this._apiKey.Host));
@@ -93,6 +100,7 @@ namespace Payout.Lib.Services
 
             throw new Exception($"Signature error, response signature: {checkout.Signature}, calculated signature: {checkout.CalculateSignature(this._signatureService)}");
         }
+
         public async Task<CheckoutListResponse> GetCheckouts(GetCheckoutListRequest request)
         {
             var response = await this.AuthenticatedSendAsync<GetCheckoutListRequest, CheckoutListResponse>(request, request.Request(this._apiKey.Host));
@@ -102,9 +110,11 @@ namespace Payout.Lib.Services
 
             throw new Exception($"Signature error.");
         }
-        #endregion
+
+        #endregion Checkout
 
         #region Withdrawals
+
         public async Task<WithdrawalResponse> CreateWithdrawal(CreateWithdrawalRequest request)
         {
             request.SignRequest(this._signatureService);
@@ -116,6 +126,7 @@ namespace Payout.Lib.Services
 
             throw new Exception($"Signature error, response signature: {withdrawal.Signature}, calculated signature: {withdrawal.CalculateSignature(this._signatureService)}");
         }
+
         public async Task<WithdrawalResponse> GetWithdrawal(GetWithdrawalRequest request)
         {
             var withdrawal = await this.AuthenticatedSendAsync<GetWithdrawalRequest, WithdrawalResponse>(request, request.Request(this._apiKey.Host));
@@ -125,6 +136,7 @@ namespace Payout.Lib.Services
 
             throw new Exception($"Signature error, response signature: {withdrawal.Signature}, calculated signature: {withdrawal.CalculateSignature(this._signatureService)}");
         }
+
         public async Task<WithdrawalListResponse> GetWithdrawals(GetWithdrawalListRequest request)
         {
             var withdrawals = await this.AuthenticatedSendAsync<GetWithdrawalListRequest, WithdrawalListResponse>(request, request.Request(this._apiKey.Host));
@@ -134,9 +146,11 @@ namespace Payout.Lib.Services
 
             throw new Exception($"Signature error.");
         }
-        #endregion
+
+        #endregion Withdrawals
 
         #region Refunds
+
         public async Task<RefundPaymentResponse> RefundPayment(RefundPaymentRequest request)
         {
             request.SignRequest(this._signatureService);
@@ -148,23 +162,29 @@ namespace Payout.Lib.Services
 
             throw new Exception($"Signature error, response signature: {refund.Signature}, calculated signature: {refund.CalculateSignature(this._signatureService)}");
         }
-        #endregion
+
+        #endregion Refunds
 
         #region Payment Methods
+
         public async Task<PaymentMethodListResponse> GetPaymentMethods(GetPaymentMethodsRequest request)
         {
             return await this.AuthenticatedSendAsync<GetPaymentMethodsRequest, PaymentMethodListResponse>(request, request.Request(this._apiKey.Host));
         }
-        #endregion
+
+        #endregion Payment Methods
 
         #region Balance
+
         public async Task<GetBalanceListResponse> GetBalance(GetBalanceRequest request)
         {
             return await this.AuthenticatedSendAsync<GetBalanceRequest, GetBalanceListResponse>(request, request.Request(this._apiKey.Host));
         }
-        #endregion
+
+        #endregion Balance
 
         #region Callers
+
         private async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request)
         {
             using (var _client = new HttpClient(this._clientHandler, false))
@@ -175,6 +195,7 @@ namespace Payout.Lib.Services
                 return await _client.SendAsync(request);
             }
         }
+
         private async Task<TResponse> AuthenticatedSendAsync<TRequest, TResponse>(TRequest requestModel, HttpRequestMessage request) where TRequest : BaseRequest
         {
             requestModel.ValidateRequest(this._modelValidation);
@@ -200,7 +221,7 @@ namespace Payout.Lib.Services
                 throw new Exception(response.ToString());
             }
         }
-        #endregion
-    }
 
+        #endregion Callers
+    }
 }

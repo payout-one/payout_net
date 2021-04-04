@@ -32,7 +32,6 @@ namespace Payout.Lib.Requests
         [JsonPropertyName("iban")]
         public string Iban { get; set; }
 
-
         public override HttpRequestMessage Request(string host)
         {
             return new HttpRequestMessage(HttpMethod.Post, $"https://{host}/api/v1/withdrawals")

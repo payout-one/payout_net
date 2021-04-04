@@ -51,8 +51,6 @@ namespace Payout.Lib.Requests
         [JsonPropertyName("redirect_url")]
         public string RedirectUrl { get; set; }
 
-
-
         public override HttpRequestMessage Request(string host)
         {
             return new HttpRequestMessage(HttpMethod.Post, $"https://{host}/api/v1/checkouts")

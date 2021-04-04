@@ -49,7 +49,6 @@ namespace Payout.Lib.Responses
         [JsonPropertyName("status")]
         public string Status { get; set; }
 
-
         public override string CalculateSignature(IPayoutSignature signature)
         {
             return signature.SignResponse(this);
@@ -59,4 +58,3 @@ namespace Payout.Lib.Responses
             => new object[] { this.Amount, this.Currency, this.ExternalId, this.Nonce };
     }
 }
-

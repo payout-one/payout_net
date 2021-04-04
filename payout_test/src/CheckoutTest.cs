@@ -22,7 +22,6 @@ namespace payout_tests
 
             Assert.True(response != null);
             Assert.True(response.Signature == response.CalculateSignature(signatureService));
-
         }
 
         [Fact]

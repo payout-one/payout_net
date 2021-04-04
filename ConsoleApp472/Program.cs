@@ -16,7 +16,7 @@ namespace ConsoleApp472
 
             var apiKey = new ApiKey { Key = key, Secret = secret, Host = host };
             var clientService = new ClientService(apiKey);
-            
+
             var token = await clientService.GetToken();
             var checkout = await clientService.GetCheckout(new GetCheckoutRequest { Id = 1 });
         }

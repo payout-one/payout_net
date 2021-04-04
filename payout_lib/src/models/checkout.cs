@@ -46,7 +46,5 @@ namespace Payout.Lib.Models
 
         [JsonPropertyName("status")]
         public string Status { get; set; }
-
-     
     }
 }

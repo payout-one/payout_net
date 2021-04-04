@@ -59,7 +59,6 @@ namespace payout_tests
                 IdempotencyKey = Guid.NewGuid().ToString(),
                 Nonce = Guid.NewGuid().ToString(),
                 Iban = "SK6807200002891987426353"
-
             });
 
             Assert.True(response != null);

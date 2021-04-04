@@ -10,7 +10,9 @@ namespace Payout.Lib.Base
 
         [JsonPropertyName("signature")]
         public string Signature { get; set; }
+
         public abstract string CalculateSignature(IPayoutSignature signature);
+
         public abstract object[] signatureParams();
     }
 }

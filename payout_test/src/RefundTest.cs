@@ -2,9 +2,7 @@
 using Payout.Lib.Models;
 using Payout.Lib.Requests;
 using Payout.Lib.Services;
-using System;
 using Xunit;
-
 
 namespace payout_tests
 {
@@ -26,7 +24,7 @@ namespace payout_tests
                 Nonce = "ZUc0Mk9sVXZDOXNsdklzMQ"
             });
 
-            Assert.True(response != null);       
+            Assert.True(response != null);
         }
     }
 }

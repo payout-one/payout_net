@@ -1,6 +1,5 @@
 ﻿using System.Text.Json.Serialization;
 
-
 namespace Payout.Lib.Responses
 {
     public class TokenStatusResponse
@@ -28,6 +27,5 @@ namespace Payout.Lib.Responses
 
         [JsonPropertyName("status")]
         public string Status { get; set; }
-
     }
 }

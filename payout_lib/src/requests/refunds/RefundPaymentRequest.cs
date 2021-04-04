@@ -29,13 +29,14 @@ namespace Payout.Lib.Requests
         [Required]
         [JsonPropertyName("checkout_id")]
         public long CheckoutId { get; set; }
+
         [Required]
         [JsonPropertyName("iban")]
         public string Iban { get; set; }
+
         [Required]
         [JsonPropertyName("statement_descriptor")]
         public string StatementDescriptor { get; set; }
-
 
         public override HttpRequestMessage Request(string host)
         {

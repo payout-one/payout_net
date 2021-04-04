@@ -1,5 +1,4 @@
-﻿
-using Payout.Lib.Models;
+﻿using Payout.Lib.Models;
 using System.Collections.Generic;
 
 namespace Payout.Lib.Responses
