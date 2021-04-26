@@ -1,8 +1,7 @@
 using Payout.Lib;
-using Payout.Lib.Services;
 using Payout.Lib.Models;
+using Payout.Lib.Services;
 using System;
-using System.Net.Http;
 using Xunit;
 
 namespace payout_tests

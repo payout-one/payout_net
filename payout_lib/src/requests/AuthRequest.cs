@@ -1,9 +1,9 @@
+using Payout.Lib.Base;
+using Payout.Lib.Models;
 using System;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
-using Payout.Lib.Base;
-using Payout.Lib.Models;
 
 namespace Payout.Lib.Requests
 {

@@ -1,7 +1,7 @@
 using Payout.Lib.Base;
-using Payout.Lib.Interfaces;
 using Payout.Lib.Models;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -11,20 +11,45 @@ namespace Payout.Lib.Requests
 {
     public class CreateCheckoutRequest : BaseSignedRequest
     {
+        [Required]
         [JsonPropertyName("amount")]
         public int Amount { get; set; }
+
+        [Required]
+        [StringLength(3)]
         [JsonPropertyName("currency")]
         public string Currency { get; set; }
+
+        [Required]
         [JsonPropertyName("customer")]
         public Customer Customer { get; set; }
+
+        [JsonPropertyName("billing_address")]
+        public Address BillingAddress { get; set; }
+
+        [JsonPropertyName("shipping_address")]
+        public Address ShippingAddress { get; set; }
+
+        [Required]
+        [JsonPropertyName("products")]
+        public List<Product> Products { get; set; }
+
+        [Required]
+        [StringLength(50)]
+        [JsonPropertyName("external_id")]
+        public string ExternalId { get; set; }
+
         [JsonPropertyName("metadata")]
         public Dictionary<string, dynamic> Metadata { get; set; }
 
+        [JsonPropertyName("mode")]
+        public string Mode { get; set; }
+
+        [JsonPropertyName("recurrent_token")]
+        public string RecurrentToken { get; set; }
+
         [JsonPropertyName("redirect_url")]
         public string RedirectUrl { get; set; }
-
-        [JsonPropertyName("external_id")]
-        public string ExternalId { get; set; }
 
         public override HttpRequestMessage Request(string host)
         {

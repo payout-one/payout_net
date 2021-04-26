@@ -1,5 +1,5 @@
-using System.Text.Json.Serialization;
 using Payout.Lib.Interfaces;
+using System.Text.Json.Serialization;
 
 namespace Payout.Lib.Base
 {
@@ -10,7 +10,9 @@ namespace Payout.Lib.Base
 
         [JsonPropertyName("signature")]
         public string Signature { get; set; }
+
         public abstract string CalculateSignature(IPayoutSignature signature);
+
         public abstract object[] signatureParams();
     }
 }

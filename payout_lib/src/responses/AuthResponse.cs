@@ -1,5 +1,5 @@
-using System.Text.Json.Serialization;
 using Payout.Lib.Base;
+using System.Text.Json.Serialization;
 
 namespace Payout.Lib.Responses
 {

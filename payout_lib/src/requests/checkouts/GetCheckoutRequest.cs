@@ -1,5 +1,5 @@
-using System.Net.Http;
 using Payout.Lib.Base;
+using System.Net.Http;
 
 namespace Payout.Lib.Requests
 {

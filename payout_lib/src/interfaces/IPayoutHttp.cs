@@ -6,6 +6,7 @@ namespace Payout.Lib.Interfaces
     public interface IPayoutHttp
     {
         Task<HttpResponseMessage> SendAsync(HttpRequestMessage _);
+
         Task<HttpResponseMessage> SendAuthenticatedAsync(HttpRequestMessage _, string __);
     }
 }

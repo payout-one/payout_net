@@ -1,14 +1,17 @@
-using System.Text.Json.Serialization;
-using Payout.Lib.Base;
+﻿using Payout.Lib.Base;
 using Payout.Lib.Interfaces;
 using Payout.Lib.Models;
+using System.Text.Json.Serialization;
 
 namespace Payout.Lib.Responses
 {
-    public class CheckoutResponse : BaseSignedResponse
+    public class RefundPaymentResponse : BaseSignedResponse
     {
         [JsonPropertyName("amount")]
-        public decimal Amount { get; set; }
+        public int Amount { get; set; }
+
+        [JsonPropertyName("created_at")]
+        public long CreatedAt { get; set; }
 
         [JsonPropertyName("currency")]
         public string Currency { get; set; }
@@ -16,26 +19,17 @@ namespace Payout.Lib.Responses
         [JsonPropertyName("customer")]
         public Customer Customer { get; set; }
 
+        [JsonPropertyName("external_id")]
+        public string ExternalId { get; set; }
+
+        [JsonPropertyName("iban")]
+        public string Iban { get; set; }
+
         [JsonPropertyName("id")]
         public long Id { get; set; }
 
-        [JsonPropertyName("metadata")]
-        public object Metadata { get; set; }
-
         [JsonPropertyName("object")]
         public string Object { get; set; }
-
-        [JsonPropertyName("payment")]
-        public Payment Payment { get; set; }
-
-        [JsonPropertyName("redirect_url")]
-        public string RedirectUrl { get; set; }
-
-        [JsonPropertyName("checkout_url")]
-        public string CheckoutUrl { get; set; }
-
-        [JsonPropertyName("external_id")]
-        public string ExternalId { get; set; }
 
         [JsonPropertyName("status")]
         public string Status { get; set; }
@@ -46,7 +40,6 @@ namespace Payout.Lib.Responses
         }
 
         public override object[] signatureParams()
-            => new object[] { this.Amount, this.Currency, this.ExternalId, this.Nonce };
+            => new object[] { this.Amount, this.Currency, this.ExternalId, this.Iban, this.Nonce };
     }
 }
-
